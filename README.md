@@ -1,8 +1,8 @@
 #iOS toolchain#
 
-Current llvm+clang version: 3.7.1
-Current [cctools-port](https://github.com/tpoechtrager/cctools-port) version: 4f8ad519f7fa49e3c6374263c9bc223690b09fc1
-Current [ldid](https://github.com/tpoechtrager/ldid) version: 3064ed628108da4b9a52cfbe5d4c1a5817811400
+- Current llvm+clang version: 3.7.1
+- Current [cctools-port](https://github.com/tpoechtrager/cctools-port) version: 4f8ad519f7fa49e3c6374263c9bc223690b09fc1
+- Current [ldid](https://github.com/tpoechtrager/ldid) version: 3064ed628108da4b9a52cfbe5d4c1a5817811400
 
 Based on work by [cjacker and yetist](https://code.google.com/p/ios-toolchain-based-on-clang-for-linux/) and work by [tpoechtrager](https://github.com/tpoechtrager).
 
@@ -145,7 +145,7 @@ $CXX -O3 my-compilation-unit.cpp -o my-ios-binary
 **NOTE**: Using `-g` to generate debugging information does not work at the
 time of writing. This is because it requires Apple's `dsymutil`.
 
-**NOTE**: Using `strip` on iOS executables makes you require to resign the
+**NOTE**: Using `strip` on iOS executables makes you require to re-sign the
 binary. This can be done by running `ldid -S /path/to/binary`.
 
 **NOTE**: Specifying `-miphoneos-version-min=xx.yy` manually on command line
