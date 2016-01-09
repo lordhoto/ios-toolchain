@@ -1,0 +1,14 @@
+Only in llvm-3.7.1.src/lib/Object: .MachOObjectFile.cpp.swp
+Only in llvm-3.7.1.src/lib/Support: .Triple.cpp.swp
+diff -ru llvm-3.7.1.src.orig/lib/Target/ARM/MCTargetDesc/ARMAsmBackend.cpp llvm-3.7.1.src/lib/Target/ARM/MCTargetDesc/ARMAsmBackend.cpp
+--- llvm-3.7.1.src.orig/lib/Target/ARM/MCTargetDesc/ARMAsmBackend.cpp	2016-01-08 22:54:45.386026006 +0100
++++ llvm-3.7.1.src/lib/Target/ARM/MCTargetDesc/ARMAsmBackend.cpp	2016-01-08 23:38:26.110247419 +0100
+@@ -756,6 +756,7 @@
+             .Cases("armv4t", "thumbv4t", MachO::CPU_SUBTYPE_ARM_V4T)
+             .Cases("armv5e", "thumbv5e", MachO::CPU_SUBTYPE_ARM_V5TEJ)
+             .Cases("armv6", "thumbv6", MachO::CPU_SUBTYPE_ARM_V6)
++            .Cases("armv6k", "thumbv6k", MachO::CPU_SUBTYPE_ARM_V6)
+             .Cases("armv6m", "thumbv6m", MachO::CPU_SUBTYPE_ARM_V6M)
+             .Cases("armv7em", "thumbv7em", MachO::CPU_SUBTYPE_ARM_V7EM)
+             .Cases("armv7k", "thumbv7k", MachO::CPU_SUBTYPE_ARM_V7K)
+Only in llvm-3.7.1.src/lib/Target/ARM/MCTargetDesc: .ARMAsmBackend.cpp.swp

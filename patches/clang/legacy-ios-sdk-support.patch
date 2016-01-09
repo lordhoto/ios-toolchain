@@ -1,0 +1,16 @@
+diff -ur llvm-3.7.1.src/tools/clang/lib/Frontend/InitHeaderSearch.cpp llvm-3.7.1.src.new/tools/clang/lib/Frontend/InitHeaderSearch.cpp
+--- llvm-3.7.1.src/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2015-07-02 06:45:27.000000000 +0200
++++ llvm-3.7.1.src.new/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2016-01-08 14:16:01.183450218 +0100
+@@ -359,6 +359,12 @@
+                                   "arm-apple-darwin10", "v7", "", triple);
+       AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.2.1",
+                                   "arm-apple-darwin10", "v6", "", triple);
++
++      // SDKs like 3.1.2 only supply C++ headers for arm-apple-darwin9.
++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.2.1",
++                                  "arm-apple-darwin9", "v7", "", triple);
++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.2.1",
++                                  "arm-apple-darwin9", "v6", "", triple);
+       break;
+ 
+     case llvm::Triple::aarch64:
