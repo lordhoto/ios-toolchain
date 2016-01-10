@@ -80,6 +80,13 @@ make -j$PARALLELISM || exit 1
 make install || exit 1
 cd ..
 
+# We add a fake dsymutil for now. This allows to build libraries which always
+# pass -g when building.
+cat > "$IOS_TOOLCHAIN_BASE/bin/dsymutil" << EOF
+#!/bin/sh
+EOF
+chmod +x "$IOS_TOOLCHAIN_BASE/bin/dsymutil"
+
 cd "$SOURCE_DIR"
 
 echo "Removing build directory..."
