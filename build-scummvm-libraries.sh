@@ -82,10 +82,6 @@ compile_library --disable-examples
 setup_library "flac-1.3.1" "tar.xz" "http://downloads.xiph.org/releases/flac/"
 compile_library --disable-xmms-plugin --disable-cpplibs
 
-# FreeType2
-setup_library "freetype-2.6.2" "tar.bz2" "http://download.savannah.gnu.org/releases/freetype/"
-compile_library
-
 # libjpeg-turbo
 setup_library "libjpeg-turbo-1.4.2" "tar.gz" "http://sourceforge.net/projects/libjpeg-turbo/files/1.4.2/"
 compile_library
@@ -101,6 +97,10 @@ compile_library --enable-fpm=default
 # libmpeg2
 setup_library "libmpeg2-0.5.1" "tar.gz" "http://libmpeg2.sourceforge.net/files/"
 compile_library --disable-sdl
+
+# FreeType2
+setup_library "freetype-2.6.2" "tar.bz2" "http://download.savannah.gnu.org/releases/freetype/"
+compile_library
 
 popd &>/dev/null
 rm -r "$BUILD_DIR"
