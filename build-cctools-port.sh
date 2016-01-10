@@ -23,7 +23,7 @@ LANGUAGE=C
 export LANGUAGE
 
 REVISION="4f8ad519f7fa49e3c6374263c9bc223690b09fc1"
-TARGETS="arm-apple-darwin9 arm-apple-darwin10 arm-apple-darwin11"
+TARGETS="arm-apple-darwin9 arm-apple-darwin11"
 
 SOURCE_DIR=`pwd`
 BUILD_DIR=build/

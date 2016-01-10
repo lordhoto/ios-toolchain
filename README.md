@@ -85,7 +85,6 @@ following variables to appropriate values:
 * `TARGET`: The target to configure the wrapper for. `build-cctools-port.sh`
             builds binutils for the following targets:
             - arm-apple-darwin9
-            - arm-apple-darwin10
             - arm-apple-darwin11
 * `IOS_SDK`: The path to the iOS SDK which will be used by default.
              The SDK's basename needs to include the iOS version the SDK is
@@ -107,7 +106,6 @@ export IOS_TOOLCHAIN_BASE=~/toolchains/ios
 export PARALLELISM=9
 
 TARGET=arm-apple-darwin9 IOS_SDK="$IOS_TOOLCHAIN_BASE/sdks/iPhoneOS4.2.sdk/" IOS_MIN_VER=3.1 ./build-clang-wrapper.sh
-TARGET=arm-apple-darwin10 IOS_SDK="IOS_TOOLCHAIN_BASE/sdks/iPhoneOS4.2.sdk/" IOS_MIN_VER=3.1 ./build-clang-wrapper.sh
 TARGET=arm-apple-darwin11 IOS_SDK="$IOS_TOOLCHAIN_BASE/sdks/iPhoneOS7.1.sdk/" ./build-clang-wrapper.sh
 ```
 
