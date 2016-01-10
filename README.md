@@ -165,7 +165,26 @@ clang will automatically select an `armv6k` target when building for
 `-arch armv6` for iOS. Due to a missing check, llvm will generate armv7 files.
 This breaks linking.
 
+* patches/libmad-0.15.1b/0001-configure-optimize.patch
+
+Removes libmad configure's fine tuning of optimization parameters. It sets
+parameters clang does not recognize, which breaks building.
+
+* patches/libmpeg2-0.5.1/0001-disable-arm-assembly.patch
+
+Disable ARM architecture detection in configure. This prevents ARM assembly
+from being used, which would otherwise break compilation in some settings
+(like `armv7`).
+
+* patches/libmpeg2-0.5.1/0002-disable-always-inline-check.patch
+
+Prevents libmpeg2 from `#define`ing `inline` in a way which breaks system
+headers for modern iOS SDKs.
+
 ## TODO ##
 
 * Integrate `dsymutil` support to allow compilation with debugging information.
 * Test toolchain setup on non-Linux/amd64 hosts.
+* Cleanup build scripts to have consistent style.
+* Try to refactor build scripts to simplify scripts and improve updating to
+  newer tool/library versions(?)
