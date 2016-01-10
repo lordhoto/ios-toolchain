@@ -28,7 +28,7 @@ function verbose_cmd {
 }
 
 if [ -z "$IOS_TOOLCHAIN_BASE" ]; then
-	echo "ERROR: \$IOS_TOOLCHAIN_BASE needs to be set to the path where clang should be installed."
+	echo "ERROR: \$IOS_TOOLCHAIN_BASE needs to be set to the path where clang-wrapper should be installed."
 	exit 1
 fi
 IOS_TOOLCHAIN_BASE=`realpath $IOS_TOOLCHAIN_BASE`
