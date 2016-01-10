@@ -1,0 +1,17 @@
+diff -ru libmpeg2-0.5.1.orig/configure libmpeg2-0.5.1/configure
+--- libmpeg2-0.5.1.orig/configure	2016-01-10 13:47:26.838902853 +0100
++++ libmpeg2-0.5.1/configure	2016-01-10 13:48:37.275018658 +0100
+@@ -5144,13 +5144,6 @@
+ #define ARCH_ALPHA
+ _ACEOF
+ ;;
+-    arm*)
+-	arm_conditional=:
+-
+-cat >>confdefs.h <<\_ACEOF
+-#define ARCH_ARM
+-_ACEOF
+-;;
+     esac
+ elif test x"$CC" = x"tendracc"; then
+         TENDRA=yes
