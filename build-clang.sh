@@ -30,7 +30,7 @@ if [ -z "PARALLELISM" ]; then
 	PARALLELISM=2
 fi
 
-LLVM_PACKAGES="llvm cfe compiler-rt"
+LLVM_PACKAGES="llvm cfe"
 
 if [ -z "$IOS_TOOLCHAIN_BASE" ]; then
 	echo "ERROR: \$IOS_TOOLCHAIN_BASE needs to be set to the path where clang should be installed."
@@ -61,10 +61,10 @@ for i in $LLVM_PACKAGES; do
 done
 
 mv cfe-$LLVM_VERSION.src llvm-$LLVM_VERSION.src/tools/clang
-mv compiler-rt-$LLVM_VERSION.src llvm-$LLVM_VERSION.src/projects/compiler-rt
 
 cd llvm-$LLVM_VERSION.src
 for i in `ls "$SOURCE_DIR/patches/clang/"`; do
+	echo "Applying patch $i..."
 	patch -p1 < "$SOURCE_DIR/patches/clang/$i" || exit 1
 done
 cd ..
