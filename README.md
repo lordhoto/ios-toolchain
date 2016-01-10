@@ -84,8 +84,8 @@ following variables to appropriate values:
 
 * `TARGET`: The target to configure the wrapper for. `build-cctools-port.sh`
             builds binutils for the following targets:
-            - arm-apple-darwin9
-            - arm-apple-darwin11
+            - `arm-apple-darwin9`
+            - `arm-apple-darwin11`
 * `IOS_SDK`: The path to the iOS SDK which will be used by default.
              The SDK's basename needs to include the iOS version the SDK is
              for.
@@ -149,6 +149,40 @@ binary. This can be done by running `ldid -S /path/to/binary`.
 **NOTE**: Specifying `-miphoneos-version-min=xx.yy` manually on command line
 overrides any `clang-wrapper` defaults and the `IPHONEOS_DEPLOYMENT_TARGET`
 variable.
+
+## Building libraries ##
+
+This toolchain was primarily brought into existence to build ScummVM for iOS.
+We include simple build scripts to setup libraries required by ScummVM. Some
+of this information can be useful when building libraries yourself.
+
+### Building pkg-config ###
+
+A lot of libraries build systems utilize `pkg-config`. If your standard
+system's `pkg-config` is picked up, this can break build settings. To prevent
+this, we build `pkg-config` to be used for the targets of the toolchain.
+
+The `build-pkg-config.sh` script takes care of installing `pkg-config` for the
+two targets `arm-apple-darwin9` and `arm-apple-darwin11`. It requires
+`IOS_TOOLCHAIN_BASE` to point at the base directory of the toolchain.
+`PARALLELISM` can be used to specify the number of jobs `make` runs in
+parallel.
+
+When building libraries yourself, you can either make sure that the
+`pkg-config` binary of the target gets picked over your system's or you simply
+set `PKG_CONFIG` to either `arm-apple-darwin9-pkg-config` or
+`arm-apple-darwin11-pkg-config`.
+
+### Building the libraries ###
+
+The script `build-scummvm-libraries.sh` takes care of everything for you.
+It requires `IOS_TOOLCHAIN_BASE` to point at the base directory of the
+toolchain. `PARALLELISM` can be used to specify the number of jobs `make`
+runs in parallel.
+
+The script will install the libraries in `usr/` residing in the target's
+folder. For example, for `arm-apple-darwin9` this means the libraries are
+stored in `$IOS_TOOLCHAIN_BASE/arm-apple-darwin9/usr`.
 
 ## Description of patches ##
 
