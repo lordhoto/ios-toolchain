@@ -86,8 +86,8 @@ verbose_cmd $CXX -std="c++98" -O2 -Wall -pedantic src/clang-wrapper/clang-wrappe
 # Create symlinks
 CC_LINK="$TARGET_BIN_DIR/$TARGET-$CLANG_CC"
 rm -f "$CC_LINK"
-verbose_cmd ln -s "\"$WRAPPER_BIN\"" "\"$CC_LINK\""
+verbose_cmd ln -sr "\"$WRAPPER_BIN\"" "\"$CC_LINK\""
 
 CXX_LINK="$TARGET_BIN_DIR/$TARGET-$CLANG_CXX"
 rm -f "$CXX_LINK"
-verbose_cmd ln -s "\"$WRAPPER_BIN\"" "\"$CXX_LINK\""
+verbose_cmd ln -sr "\"$WRAPPER_BIN\"" "\"$CXX_LINK\""
