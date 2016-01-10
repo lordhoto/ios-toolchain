@@ -51,6 +51,17 @@ mkdir -p "$BUILD_DIR"
 pushd "$BUILD_DIR" &>/dev/null
 BUILD_DIR=`pwd`
 
+# bzip2 (required for FreeType2).
+# Note that iOS SDKs have dynamic libraries, however, sometimes development
+# headers are missing. Additionally, ScummVM statically links bzip2 when
+# FreeType2 is enabled.
+BZIP2_VERSION=1.0.6
+setup_library "bzip2-$BZIP2_VERSION" "tar.gz" "http://www.bzip.org/$BZIP2_VERSION/"
+for i in $TARGETS; do
+	export TARGET="$i"
+	"$SOURCE_DIR"/build-libbz2.sh || exit 1
+done
+
 # FAAD2
 setup_library "faad2-2.7" "tar.bz2" "http://sourceforge.net/projects/faac/files/faad2-src/faad2-2.7/"
 compile_library
