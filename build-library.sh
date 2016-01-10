@@ -63,6 +63,7 @@ export CC="$TARGET-clang"
 export CXX="$TARGET-clang++"
 export CPPFLAGS="-isystem \"$TARGET_BASE/usr/include\""
 export LDFLAGS="-L\"$TARGET_BASE/usr/lib\""
+export PKG_CONFIG="$TARGET-pkg-config"
 
 mkdir -p "$BUILD_DIR"
 pushd "$BUILD_DIR" &>/dev/null
