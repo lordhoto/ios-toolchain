@@ -1,0 +1,20 @@
+diff -ru fluidsynth-1.1.6/src/drivers/fluid_coremidi.c fluidsynth-1.1.6.new/src/drivers/fluid_coremidi.c
+--- fluidsynth-1.1.6/src/drivers/fluid_coremidi.c	2012-08-16 06:01:13.000000000 +0200
++++ fluidsynth-1.1.6.new/src/drivers/fluid_coremidi.c	2016-01-11 14:44:27.493143864 +0100
+@@ -49,7 +49,7 @@
+ /* End work around */
+ 
+ #include <unistd.h>
+-#include <CoreServices/CoreServices.h>
++// #include <CoreServices/CoreServices.h>
+ #include <CoreMIDI/MIDIServices.h>
+ 
+ typedef struct {
+@@ -189,7 +189,7 @@
+         (*dev->driver.handler)(dev->driver.data, event);
+       }
+     }
+-    packet = MIDIPacketNext(packet);
++    packet = (MIDIPacket *) (((uintptr_t)(&packet->data[packet->length]) + 3) & ~3);
+   }
+ }
