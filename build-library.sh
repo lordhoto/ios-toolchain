@@ -27,6 +27,13 @@ function verbose_cmd {
     eval "$@"
 }
 
+if [ "X$1" = "X--no-shadow-build" ]; then
+	shift 1
+	SHADOW_BUILD_SUFFIX=""
+else
+	SHADOW_BUILD_SUFFIX="-build"
+fi
+
 BUILD_DIR=build/
 
 if [ -z "$PARALLELISM" ]; then
@@ -43,6 +50,10 @@ if [ -z "$PACKAGE_FILE" ]; then
 fi
 if [ -z "$PATCH_DIR" ]; then
 	echo "ERROR: \$PATCH_DIR not set."
+	exit 1
+fi
+if [ -z "$CACHE_DIR" ]; then
+	echo "ERROR: \$CACHE_DIR not set."
 	exit 1
 fi
 
@@ -87,11 +98,20 @@ for i in `ls "$PATCH_DIR/$PACKAGE/" 2>/dev/null`; do
 done
 popd &>/dev/null
 
+mkdir -p "$PACKAGE$SHADOW_BUILD_SUFFIX"
+pushd "$PACKAGE$SHADOW_BUILD_SUFFIX" &>/dev/null
+CACHE_OPT=""
+if [ -f "$CACHE_DIR/${PACKAGE}.cache" ]; then
+	echo "Copying cache file..."
+	CACHE_OPT="--cache-file=cache.cache"
+	cp "$CACHE_DIR/${PACKAGE}.cache" cache.cache
+fi
+popd &>/dev/null
+
 echo "Building $PACKAGE for $TARGET..."
 
-mkdir -p "$PACKAGE-build"
-pushd "$PACKAGE-build" &>/dev/null
-verbose_cmd "\"../$PACKAGE/configure\"" "--host=$TARGET" "\"--prefix=$TARGET_BASE/usr\"" --disable-shared --enable-static "$@" "&>build.log" || exit 1
+pushd "$PACKAGE$SHADOW_BUILD_SUFFIX" &>/dev/null
+verbose_cmd "\"../$PACKAGE/configure\"" "--host=$TARGET" "\"--prefix=$TARGET_BASE/usr\"" --disable-shared --enable-static $CACHE_OPT "$@" "&>build.log" || exit 1
 verbose_cmd "make -j$PARALLELISM &>build.log" || exit 1
 verbose_cmd "make install &>build.log" || exit 1
 popd &>/dev/null

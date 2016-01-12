@@ -24,6 +24,7 @@ export LANGUAGE
 
 SOURCE_DIR=`realpath "${0%/*}"`
 export PATCH_DIR="$SOURCE_DIR/patches"
+export CACHE_DIR="$SOURCE_DIR/caches"
 BUILD_DIR=build/
 TARGETS="arm-apple-darwin9 arm-apple-darwin11"
 
@@ -101,6 +102,20 @@ compile_library --disable-sdl
 # FreeType2
 setup_library "freetype-2.6.2" "tar.bz2" "http://download.savannah.gnu.org/releases/freetype/"
 compile_library
+
+# ffi (required for glib)
+setup_library "libffi-3.2" "tar.gz" "ftp://sourceware.org/pub/libffi/"
+compile_library
+
+# glib (required for FluidSynth)
+setup_library "glib-2.40.2" "tar.xz" "http://ftp.gnome.org/pub/gnome/sources/glib/2.40/"
+LIBS="-framework Foundation" compile_library --disable-dependency-tracking --disable-largefile
+rm -f "$IOS_TOOLCHAIN_BASE/arm-apple-darwin9/usr/bin/glib-genmarshal"
+rm -f "$IOS_TOOLCHAIN_BASE/arm-apple-darwin11/usr/bin/glib-genmarshal"
+
+# FluidSynth
+setup_library "fluidsynth-1.1.6" "tar.gz" "http://downloads.sourceforge.net/project/fluidsynth/fluidsynth-1.1.6/"
+LIBS="-framework CoreMIDI" compile_library --no-shadow-build
 
 popd &>/dev/null
 rm -r "$BUILD_DIR"
