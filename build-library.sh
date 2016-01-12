@@ -110,8 +110,14 @@ popd &>/dev/null
 
 echo "Building $PACKAGE for $TARGET..."
 
+if [ -n "$PACKAGE_SUB" ]; then
+	CONFIGURE="\"../$PACKAGE/$PACKAGE_SUB/configure\""
+else
+	CONFIGURE="\"../$PACKAGE/configure\""
+fi
+
 pushd "$PACKAGE$SHADOW_BUILD_SUFFIX" &>/dev/null
-verbose_cmd "\"../$PACKAGE/configure\"" "--host=$TARGET" "\"--prefix=$TARGET_BASE/usr\"" --disable-shared --enable-static $CACHE_OPT "$@" "&>build.log" || exit 1
+verbose_cmd "$CONFIGURE" "--host=$TARGET" "\"--prefix=$TARGET_BASE/usr\"" --disable-shared --enable-static $CACHE_OPT "$@" "&>build.log" || exit 1
 verbose_cmd "make -j$PARALLELISM &>build.log" || exit 1
 verbose_cmd "make install &>build.log" || exit 1
 popd &>/dev/null

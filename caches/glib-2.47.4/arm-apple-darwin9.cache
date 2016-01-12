@@ -1,0 +1,9 @@
+glib_cv_long_long_format=ll
+glib_cv_stack_grows=no 
+glib_cv_uscore=no
+ac_cv_func_posix_getpwuid_r=yes
+ac_cv_func_nonposix_getpwuid_r=no 
+ac_cv_func_posix_getgrgid_r=yes
+glib_cv_use_pid_surrogate=yes 
+ac_cv_func_vsnprintf_c99=yes
+ac_cv_func__NSGetEnviron=no

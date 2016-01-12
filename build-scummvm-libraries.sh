@@ -107,9 +107,13 @@ compile_library
 setup_library "libffi-3.2" "tar.gz" "ftp://sourceware.org/pub/libffi/"
 compile_library
 
+# gettext (required for modern glib)
+setup_library "gettext-0.19.7" "tar.xz" "https://ftp.gnu.org/pub/gnu/gettext/"
+PACKAGE_SUB="gettext-runtime" compile_library --disable-dependency-tracking --disable-java --disable-rpath
+
 # glib (required for FluidSynth)
-setup_library "glib-2.40.2" "tar.xz" "http://ftp.gnome.org/pub/gnome/sources/glib/2.40/"
-LIBS="-framework Foundation" compile_library --disable-dependency-tracking --disable-largefile
+setup_library "glib-2.47.4" "tar.xz" "http://ftp.gnome.org/pub/gnome/sources/glib/2.47/"
+LIBS="-framework Foundation" compile_library --enable-debug=no --disable-dependency-tracking --disable-gtk-doc --disable-gtk-doc-html --disable-gtk-doc-pdf
 for i in $TARGETS; do
 	rm -f "$IOS_TOOLCHAIN_BASE/$i/usr/bin/glib-genmarshal"
 done
