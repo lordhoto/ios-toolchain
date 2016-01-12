@@ -1,20 +1,27 @@
-diff -ru fluidsynth-1.1.6/src/drivers/fluid_coremidi.c fluidsynth-1.1.6.new/src/drivers/fluid_coremidi.c
---- fluidsynth-1.1.6/src/drivers/fluid_coremidi.c	2012-08-16 06:01:13.000000000 +0200
-+++ fluidsynth-1.1.6.new/src/drivers/fluid_coremidi.c	2016-01-11 14:44:27.493143864 +0100
-@@ -49,7 +49,7 @@
+diff -ru fluidsynth-1.1.6.orig/src/drivers/fluid_coremidi.c fluidsynth-1.1.6/src/drivers/fluid_coremidi.c
+--- fluidsynth-1.1.6.orig/src/drivers/fluid_coremidi.c	2016-01-12 21:09:57.639754094 +0100
++++ fluidsynth-1.1.6/src/drivers/fluid_coremidi.c	2016-01-12 21:32:13.566077074 +0100
+@@ -49,9 +49,23 @@
  /* End work around */
  
  #include <unistd.h>
--#include <CoreServices/CoreServices.h>
-+// #include <CoreServices/CoreServices.h>
++#include <TargetConditionals.h>
++#if !TARGET_OS_IPHONE
+ #include <CoreServices/CoreServices.h>
++#endif
  #include <CoreMIDI/MIDIServices.h>
  
++// iOS headers possibly have a broken definition, thus we supply a correct one.
++#if TARGET_OS_IPHONE
++#undef MIDIPacketNext
++#if TARGET_CPU_ARM || TARGET_CPU_ARM64
++// MIDIPacket must be 4-byte aligned
++#define MIDIPacketNext(pkt) ((MIDIPacket *)(((uintptr_t)(&(pkt)->data[(pkt)->length]) + 3) & ~3))
++#else
++#define MIDIPacketNext(pkt) ((MIDIPacket *)&(pkt)->data[(pkt)->length])
++#endif
++#endif
++
  typedef struct {
-@@ -189,7 +189,7 @@
-         (*dev->driver.handler)(dev->driver.data, event);
-       }
-     }
--    packet = MIDIPacketNext(packet);
-+    packet = (MIDIPacket *) (((uintptr_t)(&packet->data[packet->length]) + 3) & ~3);
-   }
- }
+   fluid_midi_driver_t driver;
+   MIDIClientRef client;
