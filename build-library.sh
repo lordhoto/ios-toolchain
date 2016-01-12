@@ -101,10 +101,10 @@ popd &>/dev/null
 mkdir -p "$PACKAGE$SHADOW_BUILD_SUFFIX"
 pushd "$PACKAGE$SHADOW_BUILD_SUFFIX" &>/dev/null
 CACHE_OPT=""
-if [ -f "$CACHE_DIR/${PACKAGE}.cache" ]; then
+if [ -f "$CACHE_DIR/$PACKAGE/$TARGET.cache" ]; then
 	echo "Copying cache file..."
 	CACHE_OPT="--cache-file=cache.cache"
-	cp "$CACHE_DIR/${PACKAGE}.cache" cache.cache
+	cp "$CACHE_DIR/$PACKAGE/$TARGET.cache" cache.cache
 fi
 popd &>/dev/null
 
