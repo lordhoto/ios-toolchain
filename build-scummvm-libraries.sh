@@ -110,8 +110,9 @@ compile_library
 # glib (required for FluidSynth)
 setup_library "glib-2.40.2" "tar.xz" "http://ftp.gnome.org/pub/gnome/sources/glib/2.40/"
 LIBS="-framework Foundation" compile_library --disable-dependency-tracking --disable-largefile
-rm -f "$IOS_TOOLCHAIN_BASE/arm-apple-darwin9/usr/bin/glib-genmarshal"
-rm -f "$IOS_TOOLCHAIN_BASE/arm-apple-darwin11/usr/bin/glib-genmarshal"
+for i in $TARGETS; do
+	rm -f "$IOS_TOOLCHAIN_BASE/$i/usr/bin/glib-genmarshal"
+done
 
 # FluidSynth
 setup_library "fluidsynth-1.1.6" "tar.gz" "http://downloads.sourceforge.net/project/fluidsynth/fluidsynth-1.1.6/"
