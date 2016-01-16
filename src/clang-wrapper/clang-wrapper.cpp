@@ -32,6 +32,16 @@
 	#define LIBRARY_PATH "LD_LIBRARY_PATH"
 #endif
 
+#ifdef TARGET_MACOS_X
+	#define SDK_ENV "MACOSX_SDK"
+	#define DEPLOYMENT_TARGET "MACOSX_DEPLOYMENT_TARGET"
+	#define MIN_OS_VER_PARAM "-mmacosx-version-min"
+#else
+	#define SDK_ENV "IOS_SDK"
+	#define DEPLOYMENT_TARGET "IPHONEOS_DEPLOYMENT_TARGET"
+	#define MIN_OS_VER_PARAM "-miphoneos-version-min"
+#endif
+
 extern char **environ;
 
 const char *getFilename(const char *path);
@@ -54,23 +64,31 @@ int main(int argc, char *argv[]) {
 	compilerCommand = compilerBaseDir + "bin/" + compilerCommand;
 
 	// Determine SDK and deployment settings.
-	const char *sdkPath   = getenvd("IOS_SDK", IOS_SDK_DEFAULT);
-	const char *iOSMinVer = getenvd("IPHONEOS_DEPLOYMENT_TARGET", IOS_MIN_VER_DEFAULT);
-	unsetenv("IPHONEOS_DEPLOYMENT_TARGET");
+	const char *sdkPath   = getenvd(SDK_ENV, SDK_DEFAULT);
+	const char *osMinVer = getenvd(DEPLOYMENT_TARGET, MIN_VER_DEFAULT);
+	unsetenv(DEPLOYMENT_TARGET);
 
-	std::string iOSMinVerParam = "-miphoneos-version-min=";
-	iOSMinVerParam += iOSMinVer;
+	std::string osMinVerParam = MIN_OS_VER_PARAM "=";
+	osMinVerParam += osMinVer;
 
+	const char *arch;
+#ifdef TARGET_MACOS_X
+	// Set default archtitecture based on triple's architecture
+	const char *dash = strchr(filename, '-');
+	if (!dash) {
+		abort();
+	}
+	arch = strdup(std::string(filename, (dash - filename)).c_str());
+#else
 	// Set default archtitecture based on minimum iOS version.
 	int major = -1, minor = -1;
-	if (sscanf(iOSMinVer, "%d.%d", &major, &minor) != 2) {
+	if (sscanf(osMinVer, "%d.%d", &major, &minor) != 2) {
 		abort();
 	}
 
 	// armv6 devices only support up to iOS 4.2.1. If we deploy for such an
-	// old version, we default that architecture.
-	const char *arch;
-	if (major <= 4) {
+	// old version, we default to that architecture.
+	if (major <= 4 && minor <= 2) {
 		arch = "armv6";
 	} else {
 		arch = "armv7";
@@ -80,6 +98,7 @@ int main(int argc, char *argv[]) {
 	std::string codesign = target + "-codesign_allocate";
 	setenv("CODESIGN_ALLOCATE", codesign.c_str(), 1);
 	setenv("IOS_FAKE_CODE_SIGN", "1", 1);
+#endif
 
 	// Setup environment for proper execution.
 	std::string newLdLibraryPath = compilerBaseDir;
@@ -96,13 +115,13 @@ int main(int argc, char *argv[]) {
 	char **params = (char **)malloc(sizeof(char *) * (argc + 9));
 
 	bool hasArch = false;
-	bool hasIPhoneOSVersionMin = false;
+	bool hasOSVersionMin = false;
 	for (int i = 1; i < argc; ++i) {
 		if (hasPrefix(argv[i], "-arch")) {
 			hasArch = true;
 			break;
-		} else if (hasPrefix(argv[i], "-miphoneos-version-min")) {
-			hasIPhoneOSVersionMin = true;
+		} else if (hasPrefix(argv[i], MIN_OS_VER_PARAM)) {
+			hasOSVersionMin = true;
 			break;
 		}
 	}
@@ -121,8 +140,8 @@ int main(int argc, char *argv[]) {
 	ADD_PARAM("-isysroot");
 	ADD_PARAM(sdkPath);
 
-	if (!hasIPhoneOSVersionMin) {
-		ADD_PARAM(iOSMinVerParam.c_str());
+	if (!hasOSVersionMin) {
+		ADD_PARAM(osMinVerParam.c_str());
 	}
 
 	ADD_PARAM("-mlinker-version=" LINKER_VERSION);

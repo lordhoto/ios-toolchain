@@ -22,8 +22,8 @@ export LC_ALL
 LANGUAGE=C
 export LANGUAGE
 
-REVISION="4f8ad519f7fa49e3c6374263c9bc223690b09fc1"
-TARGETS="arm-apple-darwin9 arm-apple-darwin11"
+REVISION="ab525dfc056a413b0018fa361194bbf60957cbbb"
+TARGETS="arm-apple-darwin9 arm-apple-darwin11 ppc-apple-darwin8"
 
 SOURCE_DIR=`pwd`
 BUILD_DIR=build/
@@ -53,7 +53,7 @@ cd "$BUILD_DIR"
 
 echo "Downloading cctools-port $REVISION sources..."
 
-wget -c -nv --show-progress --progress=bar:force https://github.com/tpoechtrager/cctools-port/archive/$REVISION.zip || exit 1
+wget -c -nv --show-progress --progress=bar:force https://github.com/lordhoto/cctools-port/archive/$REVISION.zip || exit 1
 
 echo "Preparing soucres..."
 

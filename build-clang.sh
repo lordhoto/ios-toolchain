@@ -74,7 +74,7 @@ echo "Building clang..."
 mkdir -p clang-build
 cd clang-build
 cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$IOS_TOOLCHAIN_BASE" \
-      -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD="$NATIVE_ARCH;ARM" \
+      -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD="$NATIVE_ARCH;ARM;AArch64;PowerPC" \
       ../llvm-$LLVM_VERSION.src || exit 1
 make -j$PARALLELISM || exit 1
 make install || exit 1

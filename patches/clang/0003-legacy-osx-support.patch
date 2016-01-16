@@ -1,0 +1,70 @@
+diff -ru llvm-3.7.1.src.orig/tools/clang/lib/Driver/ToolChains.cpp llvm-3.7.1.src/tools/clang/lib/Driver/ToolChains.cpp
+--- llvm-3.7.1.src.orig/tools/clang/lib/Driver/ToolChains.cpp	2016-01-14 17:34:41.303194990 +0100
++++ llvm-3.7.1.src/tools/clang/lib/Driver/ToolChains.cpp	2016-01-14 22:59:19.628406362 +0100
+@@ -393,8 +393,13 @@
+   } else {
+     assert(isTargetMacOS() && "unexpected non MacOS platform");
+     // The dynamic runtime library was merged with libSystem for 10.6 and
+-    // beyond; only 10.4 and 10.5 need an additional runtime library.
+-    if (isMacosxVersionLT(10, 5))
++    // beyond; only 10.2, 10.3, 10.4, and 10.5 need an additional runtime
++    // library.
++    if (isMacosxVersionLT(10, 4)) {
++      CmdArgs.push_back("-lgcc_static"); // TODO: Does Mac OS X 10.3 have a gcc_s.10.3?
++      // Allow transparent use of dlfcn.h symbols.
++      CmdArgs.push_back("-ldl"); // TODO: Does Mac OS X 10.3 require this?
++    } else if (isMacosxVersionLT(10, 5))
+       CmdArgs.push_back("-lgcc_s.10.4");
+     else if (isMacosxVersionLT(10, 6))
+       CmdArgs.push_back("-lgcc_s.10.5");
+@@ -602,6 +607,13 @@
+       return;
+     }
+ 
++    // Anicent Mac OS X versions have C++ headers which cannot be used with
++    // clang. Instead we use STLport. TODO: Is this required for OS X 10.3
++    // too?
++    if (isTargetMacOS() && isMacosxVersionLT(10, 4)) {
++      CmdArgs.push_back("-lstlport");
++    }
++
+     // Otherwise, let the linker search.
+     CmdArgs.push_back("-lstdc++");
+     break;
+diff -ru llvm-3.7.1.src.orig/tools/clang/lib/Frontend/InitHeaderSearch.cpp llvm-3.7.1.src/tools/clang/lib/Frontend/InitHeaderSearch.cpp
+--- llvm-3.7.1.src.orig/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2016-01-14 20:14:56.252177890 +0100
++++ llvm-3.7.1.src/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2016-01-14 22:56:19.510356283 +0100
+@@ -343,6 +343,15 @@
+       AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.0.0",
+                                   "powerpc-apple-darwin10", "", "ppc64",
+                                   triple);
++
++      // We use STLport on old Mac OS X SDKs to have some working standard
++      // library support.
++      AddPath("/usr/local/include/stlport", CXXSystem, false);
++
++      // Old Mac OS X SDKs contain C++ headers in old locations.
++      AddGnuCPlusPlusIncludePaths("/usr/include/gcc/darwin/3.3/c++",
++                                  "ppc-darwin", "", "",
++                                  triple);
+       break;
+ 
+     case llvm::Triple::x86:
+diff -ru llvm-3.7.1.src.orig/tools/clang/lib/Frontend/InitPreprocessor.cpp llvm-3.7.1.src/tools/clang/lib/Frontend/InitPreprocessor.cpp
+--- llvm-3.7.1.src.orig/tools/clang/lib/Frontend/InitPreprocessor.cpp	2016-01-14 17:34:41.229862463 +0100
++++ llvm-3.7.1.src/tools/clang/lib/Frontend/InitPreprocessor.cpp	2016-01-14 20:57:55.925043186 +0100
+@@ -595,6 +595,14 @@
+     }
+   }
+ 
++  // Crazy old Mac OS X headers define wchar_t as _BSD_WCHAR_T_.
++  // Prevent this when wchar_t is a builtin type.
++  if (LangOpts.WChar) {
++    Builder.defineMacro("_BSD_WCHAR_T_DEFINED_");
++    // curses.h also tries to redefine wchar_t.
++    Builder.defineMacro("_WCHAR_T");
++  }
++
+   if (LangOpts.Optimize)
+     Builder.defineMacro("__OPTIMIZE__");
+   if (LangOpts.OptimizeSize)

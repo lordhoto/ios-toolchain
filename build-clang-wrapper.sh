@@ -39,19 +39,35 @@ if [ -u "$TARGET" ]; then
 fi
 TARGET_BIN_DIR="$IOS_TOOLCHAIN_BASE/$TARGET/bin"
 
-if [ -z "$IOS_SDK" ]; then
+if [ -z "$SDK_DEFAULT" ]; then
 	echo "ERROR: \$IOS_SDK needs to be set to the directory containing the iOS SDK."
 	exit 1
 fi
-IOS_SDK=`realpath $IOS_SDK`
-IOS_SDK_VERSION=$(echo `basename "$IOS_SDK"` | grep -P -o '[0-9]+.[0-9]+')
-if [ -z "$IOS_SDK_VERSION" ]; then
+SDK_DEFAULT=`realpath $SDK_DEFAULT`
+SDK_VERSION=$(echo `basename "$SDK_DEFAULT"` | grep -P -o '[0-9]+.[0-9]+')
+if [ -z "$SDK_VERSION" ]; then
 	echo "ERROR: Could not determine SDK version. It needs to be present in the SDK's directory name."
 	exit 1
 fi
+case `basename $SDK_DEFAULT` in
+	*iPhoneOS*)
+		TARGET_OS_DEFINE=""
+		TARGET_OS_NAME="iOS"
+		;;
 
-if [ -z "$IOS_MIN_VER" ]; then
-	IOS_MIN_VER=$IOS_SDK_VERSION
+	*MacOSX*)
+		TARGET_OS_DEFINE="-DTARGET_MACOS_X"
+		TARGET_OS_NAME="Mac OS X"
+		;;
+
+	*)
+		echo "ERROR: Unknown target operating system."
+		exit 1
+		;;
+esac
+
+if [ -z "$MIN_VER_DEFAULT" ]; then
+	MIN_VER_DEFAULT=$SDK_VERSION
 fi
 
 # Determine compiler base names based on the version the user requests.
@@ -74,13 +90,14 @@ if [ -z "$CXX" ]; then
 	CXX=g++
 fi
 
-echo "Building clang-wrapper for target $TARGET with ld $LINKER_VERSION, SDK version $IOS_SDK_VERSION and target version $IOS_MIN_VER..."
+echo "Building clang-wrapper for target $TARGET with ld $LINKER_VERSION, SDK version $SDK_VERSION for $TARGET_OS_NAME and target version $MIN_VER_DEFAULT..."
 
 WRAPPER_BIN="\"$TARGET_BIN_DIR/clang-wrapper\""
 verbose_cmd $CXX -std="c++98" -O2 -Wall -pedantic src/clang-wrapper/clang-wrapper.cpp \
 	-DLINKER_VERSION="\\\"$LINKER_VERSION\\\"" \
-	-DIOS_SDK_DEFAULT="\\\"$IOS_SDK\\\"" \
-	-DIOS_MIN_VER_DEFAULT="\\\"$IOS_MIN_VER\\\"" \
+	-DSDK_DEFAULT="\\\"$SDK_DEFAULT\\\"" \
+	-DMIN_VER_DEFAULT="\\\"$MIN_VER_DEFAULT\\\"" \
+	"$TARGET_OS_DEFINE" \
 	-o "$WRAPPER_BIN"
 
 # Create symlinks

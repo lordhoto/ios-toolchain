@@ -23,7 +23,7 @@ LANGUAGE=C
 export LANGUAGE
 
 VERSION=0.29
-TARGETS="arm-apple-darwin9 arm-apple-darwin11"
+TARGETS="arm-apple-darwin9 arm-apple-darwin11 ppc-apple-darwin8"
 
 SOURCE_DIR=`pwd`
 BUILD_DIR=build/
