@@ -85,10 +85,10 @@ compile_library --disable-xmms-plugin --disable-cpplibs
 
 # libjpeg-turbo
 setup_library "libjpeg-turbo-1.4.2" "tar.gz" "http://sourceforge.net/projects/libjpeg-turbo/files/1.4.2/"
-compile_library
+compile_library --with-jpeg7 --with-jpeg8 --without-turbojpeg
 
 # libpng
-setup_library "libpng-1.6.20" "tar.xz" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/"
+setup_library "libpng-1.6.21" "tar.xz" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/"
 compile_library
 
 # libmad
@@ -100,7 +100,7 @@ setup_library "libmpeg2-0.5.1" "tar.gz" "http://libmpeg2.sourceforge.net/files/"
 compile_library --disable-sdl
 
 # FreeType2
-setup_library "freetype-2.6.2" "tar.bz2" "http://download.savannah.gnu.org/releases/freetype/"
+setup_library "freetype-2.6.3" "tar.bz2" "http://download.savannah.gnu.org/releases/freetype/"
 compile_library
 
 # ffi (required for glib)
@@ -112,7 +112,7 @@ setup_library "gettext-0.19.7" "tar.xz" "https://ftp.gnu.org/pub/gnu/gettext/"
 PACKAGE_SUB="gettext-runtime" compile_library --disable-dependency-tracking --disable-java --disable-rpath
 
 # glib (required for FluidSynth)
-setup_library "glib-2.47.4" "tar.xz" "http://ftp.gnome.org/pub/gnome/sources/glib/2.47/"
+setup_library "glib-2.46.2" "tar.xz" "http://ftp.gnome.org/pub/gnome/sources/glib/2.46/"
 LIBS="-framework Foundation" compile_library --enable-debug=no --disable-dependency-tracking --disable-gtk-doc --disable-gtk-doc-html --disable-gtk-doc-pdf
 for i in $TARGETS; do
 	rm -f "$IOS_TOOLCHAIN_BASE/$i/usr/bin/glib-genmarshal"
